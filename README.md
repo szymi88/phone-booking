@@ -16,10 +16,10 @@ Due to the demonstration character of this project the H2 in memory database was
  
 ### Phones' specifications
 
-As per the project requirements phones' technical details suppose to be fetched from the FonoApi.
+As per the project requirements phones' technical details are supposed to be fetched from the FonoApi.
 
 However, the API ( https://github.com/shakee93/fonoapi ) seems to be dead for the last 3 years. 
-In the result the technical details of all the phones fallback to hardcoded 'UNDEFINED' value.
+In the result the technical details of all the phones fallback to hardcoded `UNDEFINED` value.
 
 ## Running the project
 
