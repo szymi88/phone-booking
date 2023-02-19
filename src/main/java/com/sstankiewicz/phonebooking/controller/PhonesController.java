@@ -15,6 +15,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controller for the /bookings endpoint
+ * Provides REST endpoints to find available phones, their details and booking status
+ *
+ * @author sstankiewicz
+ */
 @RestController
 @RequestMapping("/phones")
 public class PhonesController {
@@ -25,11 +31,22 @@ public class PhonesController {
         this.phoneService = phoneService;
     }
 
+    /**
+     * Returns a list of all the available phones
+     *
+     * @return list of phones
+     */
     @GetMapping
     public List<PhoneHeader> getPhones(){
         return phoneService.getPhones();
     }
 
+    /**
+     * Provides phone details
+     *
+     * @param id id of the phone
+     * @return phone specification 404 if phone id doesn't exit
+     */
     @GetMapping("/{id}")
     public Optional<PhoneDetails> getPhoneDetails(@PathVariable int id){
         if (phoneService.getPhoneDetails(id).isEmpty()) {
@@ -38,6 +55,12 @@ public class PhonesController {
         return phoneService.getPhoneDetails(id);
     }
 
+    /**
+     * Provides phone's booking status
+     *
+     * @param id id of the phone
+     * @return phone's booking details or 404 if phone id doesn't exit
+     */
     @GetMapping("/{id}/bookings")
     public Optional<PhoneBookingStatus> getPhoneBooking(@PathVariable int id){
         var phoneBooking = phoneService.getPhoneBooking(id);

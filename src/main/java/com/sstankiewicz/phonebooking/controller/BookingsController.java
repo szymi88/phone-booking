@@ -9,6 +9,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
+/**
+ * Controller for the /bookings endpoint
+ * Provides REST endpoints for CRUD operations related to booking a phone
+ *
+ * @author sstankiewicz
+ */
 @RestController
 @RequestMapping("/bookings")
 public class BookingsController {
@@ -19,11 +25,23 @@ public class BookingsController {
         this.bookingsService = bookingsService;
     }
 
+    /**
+     * Returns booking by id
+     *
+     * @param bookingId id of the booking
+     * @return booking details or 404 if booking doesn't exit
+     */
     @GetMapping(value = "/{bookingId}")
     public Optional<Booking> getBooking(@PathVariable int bookingId) {
         return bookingsService.getBooking(bookingId);
     }
 
+    /**
+     * Allows to book phone
+     *
+     * @param booking booking details
+     * @return booking details or 409 if phone is out of stock and can't be booked
+     */
     @PostMapping
     public Optional<Booking> bookPhone(@RequestBody BookingRequest booking) {
         try {
@@ -33,6 +51,11 @@ public class BookingsController {
         }
     }
 
+    /**
+     * Allows to return the phone by removing the relevant booking by its ID
+     *
+     * @param bookingId id of the booking
+     */
     @DeleteMapping(value = "/{bookingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void returnPhone(@PathVariable int bookingId) {
