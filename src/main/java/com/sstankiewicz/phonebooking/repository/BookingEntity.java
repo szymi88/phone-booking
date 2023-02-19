@@ -8,16 +8,15 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="BOOKINGS")
+@Table(name = "BOOKINGS")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingEntity {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PHONE_ID")
     PhoneEntity phone;

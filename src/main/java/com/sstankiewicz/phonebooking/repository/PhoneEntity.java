@@ -8,11 +8,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="PHONES")
+@Table(name = "PHONES")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PhoneEntity{
+public class PhoneEntity {
     @Id
     private int id;
     private String phoneBrand;

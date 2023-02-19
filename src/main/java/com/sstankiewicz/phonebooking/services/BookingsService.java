@@ -6,10 +6,11 @@ import com.sstankiewicz.phonebooking.repository.BookingEntity;
 import com.sstankiewicz.phonebooking.repository.BookingsRepository;
 import com.sstankiewicz.phonebooking.repository.PhoneEntity;
 import com.sstankiewicz.phonebooking.repository.PhoneRepository;
-import jakarta.transaction.Transactional;
 import org.hibernate.TransientPropertyValueException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -42,7 +43,8 @@ public class BookingsService {
         bookingsRepository.deleteById(bookingId);
     }
 
-    @Transactional
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Optional<Booking> bookPhone(BookingRequest booking) {
         try {
             Optional<PhoneEntity> phone = phoneRepository.findById(booking.phoneId());
@@ -56,9 +58,9 @@ public class BookingsService {
                 throw new PhoneBookedException();
             }
 
-            var entity = bookingsRepository.save(new BookingEntity(null, new PhoneEntity(booking.phoneId(), null, null, 0), booking.clientName(), LocalDateTime.now(clock)));
+            var newEntity = new BookingEntity(null, new PhoneEntity(booking.phoneId(), null, null, 0), booking.clientName(), LocalDateTime.now(clock));
 
-            return Optional.of(mapToBooking(entity));
+            return Optional.of(mapToBooking(bookingsRepository.save(newEntity)));
         } catch (TransientPropertyValueException e) {
             return Optional.empty();
         }

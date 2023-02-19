@@ -8,7 +8,6 @@ import java.util.List;
 @Repository
 public interface BookingsRepository extends JpaRepository<BookingEntity, Integer> {
     int countByPhoneId(int phoneId);
+
     List<BookingEntity> findByPhoneId(int phoneId);
-
-
 }

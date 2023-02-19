@@ -31,7 +31,10 @@ public class PhoneSpecificationService {
                 log.warn("Couldn't find device specification in Fonoapi for {} {}", brand, model);
                 return Optional.of(UNKNOWN_SPEC);
             }
-            return responseBody.stream().findFirst().map(deviceEntity -> new PhoneSpecification(deviceEntity.getTechnology(), deviceEntity.get_2g_bands(), deviceEntity.get_3g_bands(), deviceEntity.get_4g_bands()));
+
+            return responseBody.stream().findFirst().map(deviceEntity ->
+                    new PhoneSpecification(deviceEntity.getTechnology(), deviceEntity.get_2g_bands(), deviceEntity.get_3g_bands(), deviceEntity.get_4g_bands()));
+
         } catch (IOException e) {
             log.error("Error fetching device specification from Fonoapi for {} {}", brand, model, e);
             return Optional.of(UNKNOWN_SPEC);

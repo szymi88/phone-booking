@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controller for the /bookings endpoint
@@ -62,11 +61,8 @@ public class PhonesController {
             @ApiResponse(responseCode = "404", description = "Phone id doesn't exit")
     })
     @GetMapping("/{id}")
-    public Optional<PhoneDetails> getPhoneDetails(@PathVariable @Parameter(example = "1") int id) {
-        if (phoneService.getPhoneDetails(id).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return phoneService.getPhoneDetails(id);
+    public PhoneDetails getPhoneDetails(@PathVariable @Parameter(example = "1") int id) {
+        return phoneService.getPhoneDetails(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -81,11 +77,7 @@ public class PhonesController {
             @ApiResponse(responseCode = "404", description = "Phone id doesn't exit")
     })
     @GetMapping("/{id}/bookings")
-    public Optional<PhoneBookingStatus> getPhoneBooking(@PathVariable @Parameter(example = "1") int id) {
-        var phoneBooking = phoneService.getPhoneBooking(id);
-        if (phoneBooking.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        return phoneBooking;
+    public PhoneBookingStatus getPhoneBooking(@PathVariable @Parameter(example = "1") int id) {
+        return phoneService.getPhoneBooking(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

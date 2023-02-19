@@ -42,8 +42,8 @@ public class BookingsController {
             @ApiResponse(responseCode = "404", description = "Booking id doesn't exit")
     })
     @GetMapping(value = "/{bookingId}")
-    public Optional<Booking> getBooking(@PathVariable @Parameter(example = "1") int bookingId) {
-        return bookingsService.getBooking(bookingId);
+    public Booking getBooking(@PathVariable @Parameter(example = "1") int bookingId) {
+        return bookingsService.getBooking(bookingId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     /**
