@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/bookings")
 public class BookingsController {
@@ -18,12 +20,12 @@ public class BookingsController {
     }
 
     @GetMapping(value = "/{bookingId}")
-    public Booking getBooking(@PathVariable int bookingId) {
+    public Optional<Booking> getBooking(@PathVariable int bookingId) {
         return bookingsService.getBooking(bookingId);
     }
 
     @PostMapping
-    public Booking bookPhone(@RequestBody BookingRequest booking) {
+    public Optional<Booking> bookPhone(@RequestBody BookingRequest booking) {
         try {
             return bookingsService.bookPhone(booking);
         } catch (BookingsService.PhoneBookedException e) {

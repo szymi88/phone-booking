@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PhoneEntity{
-    private @Id int id;
+    @Id
+    private int id;
     private String phoneName;
     private int stockCount;
 

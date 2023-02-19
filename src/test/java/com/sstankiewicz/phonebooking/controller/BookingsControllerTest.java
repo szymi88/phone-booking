@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,7 +30,7 @@ class BookingsControllerTest {
     @Test
     public void testGetBooking() throws Exception {
         when(bookingsServiceMock.getBooking(1))
-                .thenReturn(new Booking(1, 1, "Miles Morales", LocalDateTime.of(2023, 1, 1, 12, 0, 0)));
+                .thenReturn(Optional.of(new Booking(1, 1, "Miles Morales", LocalDateTime.of(2023, 1, 1, 12, 0, 0))));
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/bookings/1"))
                 .andExpect(status().isOk())
@@ -48,7 +49,7 @@ class BookingsControllerTest {
     @Test
     public void createBooking_expectCreatedResource() throws Exception {
         when(bookingsServiceMock.bookPhone(new BookingRequest(1, "Miles Morales")))
-                .thenReturn(new Booking(1, 1, "Miles Morales", LocalDateTime.of(2023, 1, 1, 12, 0, 0)));
+                .thenReturn(Optional.of(new Booking(1, 1, "Miles Morales", LocalDateTime.of(2023, 1, 1, 12, 0, 0))));
 
         this.mockMvc.perform(MockMvcRequestBuilders.post("/bookings")
                         .contentType(MediaType.APPLICATION_JSON)
