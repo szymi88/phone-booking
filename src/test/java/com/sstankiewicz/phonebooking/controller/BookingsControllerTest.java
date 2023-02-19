@@ -90,19 +90,7 @@ class BookingsControllerTest {
 
     @Test
     public void removeExistingBooking_expect204() throws Exception {
-        when(bookingsServiceMock.removeBooking(1))
-                .thenReturn(true);
-
-        this.mockMvc.perform(MockMvcRequestBuilders.delete("/bookings/1"))
+          this.mockMvc.perform(MockMvcRequestBuilders.delete("/bookings/1"))
                 .andExpect(status().isNoContent());
-    }
-
-    @Test
-    public void removeNotExistingBooking_expect404() throws Exception {
-        when(bookingsServiceMock.removeBooking(1))
-                .thenReturn(false);
-
-        this.mockMvc.perform(MockMvcRequestBuilders.delete("/bookings/1"))
-                .andExpect(status().isNotFound());
     }
 }

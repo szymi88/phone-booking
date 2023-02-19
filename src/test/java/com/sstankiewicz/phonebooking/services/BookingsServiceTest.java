@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class BookingsServiceTest {
 
@@ -26,14 +26,36 @@ class BookingsServiceTest {
 
     @Test
     void getBooking() {
+        var bookingsRepositoryMock = mock(BookingsRepository.class);
+
+        var service = new BookingsService(bookingsRepositoryMock, mock(PhoneRepository.class), fixedClock);
+        service.getBooking(1);
     }
 
     @Test
     void getBookingsByPhoneId() {
+        var bookingsRepositoryMock = mock(BookingsRepository.class);
+
+        when(bookingsRepositoryMock.findByPhoneId(1))
+                .thenReturn(List.of(
+                        new BookingEntity(1, new PhoneEntity(1, null, 1), "Miles Morales", LocalDateTime.of(2023, 1, 1, 0, 0, 0))
+                ));
+        var service = new BookingsService(bookingsRepositoryMock, mock(PhoneRepository.class), fixedClock);
+
+        assertThat(service.getBookingsByPhoneId(1)).containsExactly(new Booking(1, 1, "Miles Morales", LocalDateTime.of(2023, 1, 1, 0, 0, 0)));
+
     }
 
     @Test
-    void removeBooking() {
+    void removeBooking_shouldRemoveBookingFromTheDb() {
+        var bookingsRepositoryMock = mock(BookingsRepository.class);
+
+        doNothing().when(bookingsRepositoryMock).deleteById(1);
+
+        var service = new BookingsService(bookingsRepositoryMock, mock(PhoneRepository.class), fixedClock);
+        service.removeBooking(1);
+
+        verify(bookingsRepositoryMock, times(1)).deleteById(1);
     }
 
     @Test

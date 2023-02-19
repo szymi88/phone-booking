@@ -35,11 +35,11 @@ public class BookingsService {
     }
 
     public List<Booking> getBookingsByPhoneId(int id) {
-        return List.of(new Booking(id, 1, "Miles Morales", LocalDateTime.of(2023, 1, 1, 12, 0, 0)));
+        return bookingsRepository.findByPhoneId(id).stream().map(BookingsService::mapToBooking).toList();
     }
 
-    public boolean removeBooking(long bookingId) {
-        return false;
+    public void removeBooking(int bookingId) {
+        bookingsRepository.deleteById(bookingId);
     }
 
     @Transactional
@@ -52,8 +52,6 @@ public class BookingsService {
 
             var stockCount = phone.get().getStockCount();
             var bookedCount = bookingsRepository.countByPhoneId(booking.phoneId());
-            System.out.println(bookedCount+"/"+stockCount);
-            System.out.println(bookingsRepository.findAll());
             if (stockCount <= bookedCount) {
                 throw new PhoneBookedException();
             }

@@ -35,10 +35,8 @@ public class BookingsController {
 
     @DeleteMapping(value = "/{bookingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void returnPhone(@PathVariable long bookingId) {
-        if (!bookingsService.removeBooking(bookingId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+    public void returnPhone(@PathVariable int bookingId) {
+        bookingsService.removeBooking(bookingId);
     }
 
 }
