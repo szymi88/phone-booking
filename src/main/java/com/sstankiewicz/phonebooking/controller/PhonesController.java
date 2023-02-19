@@ -1,7 +1,7 @@
 package com.sstankiewicz.phonebooking.controller;
 
 
-import com.sstankiewicz.phonebooking.model.Booking;
+import com.sstankiewicz.phonebooking.model.PhoneBookingStatus;
 import com.sstankiewicz.phonebooking.model.PhoneDetails;
 import com.sstankiewicz.phonebooking.model.PhoneHeader;
 import com.sstankiewicz.phonebooking.services.PhoneService;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/phones")
@@ -30,18 +31,17 @@ public class PhonesController {
     }
 
     @GetMapping("/{id}")
-    public PhoneDetails getPhoneDetails(@PathVariable long id){
-        var phoneDetails =  phoneService.getPhoneDetails(id);
-        if (phoneDetails == null) {
+    public Optional<PhoneDetails> getPhoneDetails(@PathVariable int id){
+        if (phoneService.getPhoneDetails(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return phoneDetails;
+        return phoneService.getPhoneDetails(id);
     }
 
     @GetMapping("/{id}/bookings")
-    public Booking getPhoneBooking(@PathVariable long id){
+    public Optional<PhoneBookingStatus> getPhoneBooking(@PathVariable int id){
         var phoneBooking = phoneService.getPhoneBooking(id);
-        if (phoneBooking == null) {
+        if (phoneBooking.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return phoneBooking;

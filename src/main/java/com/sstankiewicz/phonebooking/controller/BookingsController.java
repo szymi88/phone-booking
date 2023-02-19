@@ -18,7 +18,7 @@ public class BookingsController {
     }
 
     @GetMapping(value = "/{bookingId}")
-    public Booking getBooking(@PathVariable long bookingId) {
+    public Booking getBooking(@PathVariable int bookingId) {
         return bookingsService.getBooking(bookingId);
     }
 

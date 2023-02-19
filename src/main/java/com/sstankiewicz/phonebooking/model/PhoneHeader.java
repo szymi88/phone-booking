@@ -1,3 +1,4 @@
 package com.sstankiewicz.phonebooking.model;
 
-public record PhoneHeader(long id, String name){}
+public record PhoneHeader(long id, String name){
+}

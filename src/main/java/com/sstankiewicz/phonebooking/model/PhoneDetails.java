@@ -3,7 +3,7 @@ package com.sstankiewicz.phonebooking.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record PhoneDetails(
-        long id,
+        int id,
         String name,
         String model,
         String technology,

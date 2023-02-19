@@ -1,9 +1,11 @@
 package com.sstankiewicz.phonebooking.controller;
 
 import com.sstankiewicz.phonebooking.model.Booking;
+import com.sstankiewicz.phonebooking.model.PhoneBookingStatus;
 import com.sstankiewicz.phonebooking.model.PhoneDetails;
 import com.sstankiewicz.phonebooking.model.PhoneHeader;
 import com.sstankiewicz.phonebooking.services.PhoneService;
+import com.sstankiewicz.phonebooking.services.PhoneSpecificationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -27,6 +30,9 @@ class PhonesControllerTest {
 
     @MockBean
     private PhoneService phoneService;
+
+    @MockBean
+    private PhoneSpecificationService pp;
 
     @Test
     public void getPhones_ExpectListOfAllPhones() throws Exception {
@@ -54,7 +60,7 @@ class PhonesControllerTest {
     @Test
     public void getPhone_ExpectPhoneDetails() throws Exception {
         when(phoneService.getPhoneDetails(1))
-                .thenReturn(new PhoneDetails(1, "Samsung Galaxy S9", "Samsung Galaxy S9", "Tech", "2gBand", "3gBand", "4gBand"));
+                .thenReturn(Optional.of(new PhoneDetails(1, "Samsung Galaxy S9", "Samsung Galaxy S9", "Tech", "2gBand", "3gBand", "4gBand")));
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/phones/1"))
                 .andExpect(status().isOk())
@@ -75,8 +81,7 @@ class PhonesControllerTest {
 
     @Test
     public void getPhone_phoneDoesNotExist_expect404() throws Exception {
-        when(phoneService.getPhoneBooking(1))
-                .thenReturn(null);
+        when(phoneService.getPhoneDetails(1)).thenReturn(Optional.empty());
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/phones/1"))
                 .andExpect(status().isNotFound());
@@ -85,7 +90,7 @@ class PhonesControllerTest {
     @Test
     public void getPhoneBooking_ExpectBookingInformation() throws Exception {
         when(phoneService.getPhoneBooking(1))
-                .thenReturn(new Booking(1, 1, false, "Miles Morales", LocalDateTime.of(2023, 1, 1, 12, 0, 0)));
+                .thenReturn(Optional.of(new PhoneBookingStatus(1, false, 1, "Miles Morales", LocalDateTime.of(2023, 1, 1, 12, 0, 0))));
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/phones/1/bookings"))
                 .andExpect(status().isOk())
@@ -93,9 +98,9 @@ class PhonesControllerTest {
                 .andExpect(
                         content().json("""
                               {
-                                 "bookingId" : 1,
                                  "phoneId" : 1,
                                  "availability" : false,
+                                 "bookingId" : 1,
                                  "bookedBy" : "Miles Morales",
                                  "bookedFrom" : "2023-01-01T12:00:00"
                                 }
@@ -105,7 +110,7 @@ class PhonesControllerTest {
     @Test
     public void getPhoneBooking_phoneDoesNotExist_expect404() throws Exception {
         when(phoneService.getPhoneBooking(1))
-                .thenReturn(null);
+                .thenReturn(Optional.empty());
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/phones/1/bookings"))
                 .andExpect(status().isNotFound());

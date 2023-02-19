@@ -1,2 +1,2 @@
 package com.sstankiewicz.phonebooking.model;
-public record BookingRequest(long phoneId, String clientName){};
+public record BookingRequest(int phoneId, String clientName){}
