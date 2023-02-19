@@ -6,6 +6,7 @@ import com.sstankiewicz.phonebooking.services.BookingsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
@@ -38,8 +39,8 @@ public class BookingsController {
      */
     @Operation(summary = "Get booking by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Returns booking details", content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "404", description = "Booking id doesn't exit")
+            @ApiResponse(responseCode = "200", description = "Returns booking details", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Booking.class))}),
+            @ApiResponse(responseCode = "404", description = "Booking id doesn't exit",content = @Content(schema = @Schema())),
     })
     @GetMapping(value = "/{bookingId}")
     public Booking getBooking(@PathVariable @Parameter(example = "1") int bookingId) {
@@ -54,13 +55,14 @@ public class BookingsController {
      */
     @Operation(summary = "Book phone")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Phone booked", content = {@Content(mediaType = "application/json")}),
-            @ApiResponse(responseCode = "409", description = "No phones available. Phone can't be booked")
+            @ApiResponse(responseCode = "200", description = "Phone booked", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Booking.class))}),
+            @ApiResponse(responseCode = "404", description = "Phone id doesn't exist. Phone can't be booked", content = @Content(schema = @Schema())),
+            @ApiResponse(responseCode = "409", description = "No phones available. Phone can't be booked",  content = @Content(schema = @Schema()))
     })
     @PostMapping
-    public Optional<Booking> bookPhone(@RequestBody BookingRequest booking) {
+    public Booking bookPhone(@RequestBody BookingRequest booking) {
         try {
-            return bookingsService.bookPhone(booking);
+            return bookingsService.bookPhone(booking).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         } catch (BookingsService.PhoneBookedException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
