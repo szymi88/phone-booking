@@ -38,7 +38,7 @@ class BookingsServiceTest {
 
         when(bookingsRepositoryMock.findByPhoneId(1))
                 .thenReturn(List.of(
-                        new BookingEntity(1, new PhoneEntity(1, null, 1), "Miles Morales", LocalDateTime.of(2023, 1, 1, 0, 0, 0))
+                        new BookingEntity(1, new PhoneEntity(1, null, null, 1), "Miles Morales", LocalDateTime.of(2023, 1, 1, 0, 0, 0))
                 ));
         var service = new BookingsService(bookingsRepositoryMock, mock(PhoneRepository.class), fixedClock);
 
@@ -71,7 +71,7 @@ class BookingsServiceTest {
         when(bookingsRepositoryMock.countByPhoneId(1)).thenReturn(1);
 
         var phoneRepositoryMock = mock(PhoneRepository.class);
-        when(phoneRepositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, null, 2)));
+        when(phoneRepositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, null, null, 2)));
 
         var service = new BookingsService(bookingsRepositoryMock, phoneRepositoryMock, fixedClock);
 
@@ -82,7 +82,7 @@ class BookingsServiceTest {
     @Test
     void bookPhone_shouldReturnEmptyIfPhoneDoesNotExist() {
         var repositoryMock = mock(BookingsRepository.class);
-        var entity = new BookingEntity(null, new PhoneEntity(1, null, 1), "Miles Morales", LocalDateTime.of(2023, 1, 1, 0, 0, 0));
+        var entity = new BookingEntity(null, new PhoneEntity(1, null, null, 1), "Miles Morales", LocalDateTime.of(2023, 1, 1, 0, 0, 0));
         when(repositoryMock.save(entity))
                 .thenThrow(new TransientPropertyValueException(null, null, null, null));
 
@@ -96,7 +96,7 @@ class BookingsServiceTest {
         when(repositoryMock.countByPhoneId(1)).thenReturn(2);
 
         var phoneRepositoryMock = mock(PhoneRepository.class);
-        when(phoneRepositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, null, 2)));
+        when(phoneRepositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, null, null, 2)));
 
 
         var service = new BookingsService(repositoryMock, phoneRepositoryMock, fixedClock);

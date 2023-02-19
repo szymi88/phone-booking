@@ -23,39 +23,39 @@ class PhoneServiceTest {
     void getPhones_shouldReturnAllPhones() {
         var repositoryMock = mock(PhoneRepository.class);
         when(repositoryMock.findAll()).thenReturn(List.of(
-                new PhoneEntity(1, "phone1", 0),
-                new PhoneEntity(2, "phone2", 0),
-                new PhoneEntity(3, "phone3", 0)
+                new PhoneEntity(1, "brand1", "phone1", 0),
+                new PhoneEntity(2, "brand2", "phone2", 0),
+                new PhoneEntity(3, "brand3", "phone3", 0)
         ));
 
         var service = new PhoneService(repositoryMock, mock(PhoneSpecificationService.class), mock(BookingsService.class));
 
         assertThat(service.getPhones()).containsExactly(
-                new PhoneHeader(1, "phone1"),
-                new PhoneHeader(2, "phone2"),
-                new PhoneHeader(3, "phone3")
+                new PhoneHeader(1, "brand1 phone1"),
+                new PhoneHeader(2, "brand2 phone2"),
+                new PhoneHeader(3, "brand3 phone3")
         );
     }
 
     @Test
     void getPhones_shouldReturnPhoneDetails() {
         var repositoryMock = mock(PhoneRepository.class);
-        when(repositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, "phone1", 1)));
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, "brand1", "phone1", 1)));
 
         var specificationServiceMock = mock(PhoneSpecificationService.class);
-        when(specificationServiceMock.getSpecification("phone1"))
-                .thenReturn(Optional.of(new PhoneSpecificationService.PhoneSpecification("Samsung S5", "3G", "2gBands", "3gBands", "4gBands")));
+        when(specificationServiceMock.getSpecification("brand1",  "phone1"))
+                .thenReturn(Optional.of(new PhoneSpecificationService.PhoneSpecification("3G", "2gBands", "3gBands", "4gBands")));
 
         var service = new PhoneService(repositoryMock, specificationServiceMock, mock(BookingsService.class));
         assertThat(service.getPhoneDetails(1))
-                .hasValue(new PhoneDetails(1, "phone1", "Samsung S5", "3G", "2gBands", "3gBands", "3gBands"));
+                .hasValue(new PhoneDetails(1, "brand1 phone1", "3G", "2gBands", "3gBands", "3gBands"));
 
     }
 
     @Test
     void getPhonesBooking_whenAllPhonesBooked_shouldReturnAvailabilityFalseAndDetailsOfLastBooking() {
         var repositoryMock = mock(PhoneRepository.class);
-        when(repositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, "phone1", 3)));
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, "brand1", "phone1", 3)));
 
         var bookingServiceMock = mock(BookingsService.class);
         when(bookingServiceMock.getBookingsByPhoneId(1)).thenReturn(new ArrayList<>(List.of(
@@ -66,25 +66,25 @@ class PhoneServiceTest {
 
         var service = new PhoneService(repositoryMock, mock(PhoneSpecificationService.class), bookingServiceMock);
         assertThat(service.getPhoneBooking(1))
-                .hasValue(new PhoneBookingStatus( 1, false,1, "Miles Morales", LocalDateTime.of(2023, 1, 1, 12, 0, 0)));
+                .hasValue(new PhoneBookingStatus(1, false, 1, "Miles Morales", LocalDateTime.of(2023, 1, 1, 12, 0, 0)));
 
     }
 
     @Test
     void getPhonesBooking_shouldNotFailIfNoPhoneInStock() {
         var repositoryMock = mock(PhoneRepository.class);
-        when(repositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, "phone1", 0)));
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, "brand1", "phone1", 0)));
 
         var service = new PhoneService(repositoryMock, mock(PhoneSpecificationService.class), mock(BookingsService.class));
         assertThat(service.getPhoneBooking(1))
-                .hasValue(new PhoneBookingStatus( 1, false,null, null, null));
+                .hasValue(new PhoneBookingStatus(1, false, null, null, null));
 
     }
 
     @Test
     void getPhonesBooking_whenAllPhonesAvailable_shouldReturnAvailabilityTrueAndBoBookingDetails() {
         var repositoryMock = mock(PhoneRepository.class);
-        when(repositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, "phone1", 4)));
+        when(repositoryMock.findById(1)).thenReturn(Optional.of(new PhoneEntity(1, "brand1", "phone1", 4)));
 
         var bookingServiceMock = mock(BookingsService.class);
         when(bookingServiceMock.getBookingsByPhoneId(1)).thenReturn(List.of(

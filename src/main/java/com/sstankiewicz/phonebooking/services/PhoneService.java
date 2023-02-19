@@ -30,7 +30,7 @@ public class PhoneService {
     public List<PhoneHeader> getPhones() {
         return phoneRepository.findAll()
                 .stream()
-                .map(phoneEntity -> new PhoneHeader(phoneEntity.getId(), phoneEntity.getPhoneName()))
+                .map(phoneEntity -> new PhoneHeader(phoneEntity.getId(), String.join(" ", phoneEntity.getPhoneBrand(), phoneEntity.getPhoneModel())))
                 .toList();
     }
 
@@ -53,14 +53,21 @@ public class PhoneService {
     }
 
     public Optional<PhoneDetails> getPhoneDetails(int id) {
-        return phoneRepository.findById(id)
-                .map(phoneEntity -> phoneApiClient.getSpecification(phoneEntity.getPhoneName()).map(
-                                phoneSpecification -> toPhoneDetails(phoneEntity, phoneSpecification)
-                        )
-                        .orElse(new PhoneDetails(phoneEntity.getId(), phoneEntity.getPhoneName(), null, null, null, null, null)));
+        return phoneRepository.findById(id).flatMap(this::getPhoneDetails);
+    }
+
+    private Optional<PhoneDetails> getPhoneDetails(PhoneEntity phoneEntity) {
+        return phoneApiClient.getSpecification(phoneEntity.getPhoneBrand(), phoneEntity.getPhoneModel())
+                .map(phoneSpecification -> toPhoneDetails(phoneEntity, phoneSpecification));
+
     }
 
     private static PhoneDetails toPhoneDetails(PhoneEntity phoneEntity, PhoneSpecificationService.PhoneSpecification phoneSpecification) {
-        return new PhoneDetails(phoneEntity.getId(), phoneEntity.getPhoneName(), phoneSpecification.model(), phoneSpecification.technology(), phoneSpecification._2gBands(), phoneSpecification._3gBands(), phoneSpecification._3gBands());
+        return new PhoneDetails(phoneEntity.getId(),
+                String.join(" ", phoneEntity.getPhoneBrand(), phoneEntity.getPhoneModel()),
+                phoneSpecification.technology(),
+                phoneSpecification._2gBands(),
+                phoneSpecification._3gBands(),
+                phoneSpecification._3gBands());
     }
 }

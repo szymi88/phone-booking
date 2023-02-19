@@ -1,6 +1,5 @@
 package com.sstankiewicz.phonebooking.controller;
 
-import com.sstankiewicz.phonebooking.model.Booking;
 import com.sstankiewicz.phonebooking.model.PhoneBookingStatus;
 import com.sstankiewicz.phonebooking.model.PhoneDetails;
 import com.sstankiewicz.phonebooking.model.PhoneHeader;
@@ -32,7 +31,7 @@ class PhonesControllerTest {
     private PhoneService phoneService;
 
     @MockBean
-    private PhoneSpecificationService pp;
+    private PhoneSpecificationService phoneSpecificationService;
 
     @Test
     public void getPhones_ExpectListOfAllPhones() throws Exception {
@@ -60,7 +59,7 @@ class PhonesControllerTest {
     @Test
     public void getPhone_ExpectPhoneDetails() throws Exception {
         when(phoneService.getPhoneDetails(1))
-                .thenReturn(Optional.of(new PhoneDetails(1, "Samsung Galaxy S9", "Samsung Galaxy S9", "Tech", "2gBand", "3gBand", "4gBand")));
+                .thenReturn(Optional.of(new PhoneDetails(1, "Samsung Galaxy S9", "Tech", "2gBand", "3gBand", "4gBand")));
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/phones/1"))
                 .andExpect(status().isOk())
@@ -70,7 +69,6 @@ class PhonesControllerTest {
                                   {
                                    "id" : 1,
                                    "name" : "Samsung Galaxy S9",
-                                   "model": "Samsung Galaxy S9",
                                    "technology": "Tech",
                                    "2gBands": "2gBand",
                                    "3gBands": "3gBand",

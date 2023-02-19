@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class PhoneEntity{
     @Id
     private int id;
-    private String phoneName;
+    private String phoneBrand;
+    private String phoneModel;
     private int stockCount;
 
 }

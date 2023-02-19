@@ -56,7 +56,7 @@ public class BookingsService {
                 throw new PhoneBookedException();
             }
 
-            var entity = bookingsRepository.save(new BookingEntity(null, new PhoneEntity(booking.phoneId(), null, 0), booking.clientName(), LocalDateTime.now(clock)));
+            var entity = bookingsRepository.save(new BookingEntity(null, new PhoneEntity(booking.phoneId(), null, null, 0), booking.clientName(), LocalDateTime.now(clock)));
 
             return Optional.of(mapToBooking(entity));
         } catch (TransientPropertyValueException e) {
