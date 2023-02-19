@@ -47,8 +47,7 @@ public class PhoneService {
         if (bookings.size() < phoneEntity.getStockCount()) {
             return new PhoneBookingStatus(phoneEntity.getId(), true, null, null, null);
         }
-        bookings.sort(Comparator.comparing(Booking::bookedFrom));
-        var lastBooking = bookings.get(bookings.size() - 1);
+        var lastBooking = bookings.stream().max(Comparator.comparing(Booking::bookedFrom)).orElseThrow();
         return new PhoneBookingStatus(phoneEntity.getId(), false, lastBooking.bookingId(), lastBooking.bookedBy(), lastBooking.bookedFrom());
     }
 
